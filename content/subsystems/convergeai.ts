@@ -145,7 +145,7 @@ export const convergeai: Subsystem = {
       h: 60,
       detail: {
         role: "Merges the three revised answers into one, keeps the citations that survived cross-critique, and records model-reported confidence.",
-        why: "A separate engine keeps the merge rules testable in isolation from transport and model-call concerns.",
+        why: "A separate engine keeps the merge rules testable in isolation from transport and prompting concerns.",
         rejected:
           "Letting a fourth model call do the merging. It adds a provider round trip and hides the merge logic inside an opaque call.",
         breaks:
@@ -183,7 +183,7 @@ export const convergeai: Subsystem = {
         role: "Serves GLM-4.7 as the second independent debater.",
         why: "A different model family from a different provider keeps the debate genuinely independent. Three copies of one model mostly agree with themselves.",
         rejected:
-          "Three runs of one model at different temperatures. Cheaper, but critique between near-clones is theatre.",
+          "Three prompts against one model at different temperatures. Cheaper, but critique between near-clones is theatre.",
         breaks:
           "Provider-specific output quirks surface here first; the router's defensive parser exists because of them.",
       },
