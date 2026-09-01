@@ -51,8 +51,9 @@ Captures come only from a real local run:
 node scripts/capture-trace.mjs http://localhost:8080/api/health
 ```
 
-Paste the printed object into `content/traces.ts`. If no capture is checked in, the
-panel says so instead of showing numbers.
+Paste the printed object into `content/traces.ts` keyed by slug. Until a capture is
+checked in, the whole trace control is hidden for that subsystem; adding the entry
+restores it, labelled `recorded`. Nothing is ever shown that was not measured.
 
 ## Deploying
 
