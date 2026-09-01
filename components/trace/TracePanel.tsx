@@ -228,6 +228,10 @@ export function TracePanel({ subsystem }: { subsystem: Subsystem }) {
   const trace = subsystem.trace;
   const recorded = recordedTraces[subsystem.slug];
 
+  // A recorded trace with no capture yet has nothing honest to show,
+  // so the whole control stays hidden until one is checked in.
+  if (trace.mode === "recorded" && !recorded) return null;
+
   return (
     <section className="mt-6" aria-label={`${subsystem.name} request trace`}>
       <div className="mb-3 flex items-center gap-2.5">
@@ -247,15 +251,7 @@ export function TracePanel({ subsystem }: { subsystem: Subsystem }) {
             footnote={`Captured from a local run on ${recorded.capturedOn}.`}
           />
         </div>
-      ) : (
-        <div className="inset px-5 py-6">
-          <p className="text-sm text-ink-soft">{trace.description}</p>
-          <p className="mt-2 text-xs text-ink-soft">
-            No capture is checked in yet, so nothing is shown. A recorded trace only ever
-            comes from a timed local run; it is never invented.
-          </p>
-        </div>
-      )}
+      ) : null}
     </section>
   );
 }
