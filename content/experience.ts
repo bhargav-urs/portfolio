@@ -8,11 +8,11 @@ export const roles: Role[] = [
     start: "Apr 2026",
     end: "Present",
     impact:
-      "Ships end to end product features across React/Next.js, TypeScript, and Spring Boot/Node surfaces used daily by the product's own users.",
+      "Ships end to end product features across React/Next.js, TypeScript, Spring Boot/Node, and on chain Solidity surfaces used daily by the product's own users.",
     bullets: [
-      "Build end to end product features across the full stack: React/Next.js and TypeScript on the frontend, Spring Boot/Node on the backend, shipping user facing surfaces used daily by the product's own users.",
-      "Own feature design decisions in gray areas, balancing UX, data model constraints, and delivery speed while working directly with a small, fast moving team.",
-      "Write and review application code alongside automated test coverage, isolating defects, reproducing reported issues on Linux based environments, and verifying fixes before release.",
+      "Build end to end product features across the full stack: React/Next.js and TypeScript on the frontend, Spring Boot/Node on the backend, and Solidity smart contracts integrated through ethers.js, shipping user facing surfaces used daily by the product's own users.",
+      "Own feature design decisions in gray areas, balancing UX, data model constraints, and delivery speed, including how custodial and non custodial wallet connection flows fold into production user journeys, while working directly with a small, fast moving team.",
+      "Write and review application code alongside automated test coverage, reviewing on chain logic for safety, isolating defects, reproducing reported issues on Linux based environments, and verifying fixes before release.",
       "Maintain CI driven test execution on every push so regressions surface as fast feedback rather than late in the release cycle.",
     ],
   },
