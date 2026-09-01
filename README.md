@@ -42,6 +42,21 @@ npm run resume -- /path/to/New_Resume.pdf
 That replaces `public/resume.pdf` in place; the public URL stays `/resume.pdf` and the
 old copy is gone after the next deploy.
 
+## Adding screenshots
+
+Drop captures into `public/screens/<slug>/`, named `NN-short-name.png` so the
+number fixes display order, then:
+
+```
+npm run screens
+```
+
+That prints a ready-to-paste `screens` array with the real pixel dimensions read
+from each file, which is what `next/image` needs to reserve layout space. Replace
+the generated `alt` and `caption` text with real sentences before committing.
+Portrait captures are detected automatically and rendered at a narrower cap so a
+phone screen does not tower over the landscape ones.
+
 ## Recorded traces
 
 Subsystems that are not publicly deployed show a recorded trace instead of a live one.
