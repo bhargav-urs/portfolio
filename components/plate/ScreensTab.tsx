@@ -20,22 +20,28 @@ export function ScreensTab({ subsystem }: { subsystem: Subsystem }) {
 
   return (
     <ul className="grid gap-5 md:grid-cols-2">
-      {subsystem.screens.map((screen) => (
-        <li key={screen.src}>
-          <figure>
-            <div className="plate p-1.5">
-              <Image
-                src={screen.src}
-                alt={screen.alt}
-                width={screen.width}
-                height={screen.height}
-                className="h-auto w-full"
-              />
-            </div>
-            <figcaption className="mt-1.5 text-xs text-ink-soft">{screen.caption}</figcaption>
-          </figure>
-        </li>
-      ))}
+      {subsystem.screens.map((screen) => {
+        // Portrait captures (a phone app) would otherwise stretch to the full
+        // column and tower over the landscape ones, so they get their own cap.
+        const portrait = screen.height > screen.width;
+        return (
+          <li key={screen.src}>
+            <figure style={portrait ? { maxWidth: 300 } : undefined}>
+              <div className="plate p-1.5">
+                <Image
+                  src={screen.src}
+                  alt={screen.alt}
+                  width={screen.width}
+                  height={screen.height}
+                  sizes={portrait ? "300px" : "(min-width: 768px) 45vw, 92vw"}
+                  className="h-auto w-full"
+                />
+              </div>
+              <figcaption className="mt-1.5 text-xs text-ink-soft">{screen.caption}</figcaption>
+            </figure>
+          </li>
+        );
+      })}
     </ul>
   );
 }
