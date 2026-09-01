@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "resume": "node scripts/update-resume.mjs"
+    "resume": "node scripts/update-resume.mjs",
+    "screens": "node scripts/screens.mjs"
   },
   "dependencies": {
     "cmdk": "^1.1.1",
