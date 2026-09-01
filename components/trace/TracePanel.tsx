@@ -20,7 +20,7 @@ type TraceSuccess = {
 
 type TraceFailure = {
   ok: false;
-  error: "timeout" | "network";
+  error: "timeout" | "network" | "rate-limit";
   elapsedMs: number;
 };
 
@@ -214,6 +214,11 @@ function LiveTrace({ target, description }: { target: string; description: strin
               No response within the timeout ({Math.round(result.elapsedMs / 100) / 10} s
               elapsed). On this free tier that usually means the instance is still waking;
               run it again in a few seconds.
+            </>
+          ) : result.error === "rate-limit" ? (
+            <>
+              Trace limit reached. This proxy allows a few runs per minute so the page can
+              never hammer the backend it measures; try again shortly.
             </>
           ) : (
             <>The service did not respond. That is the honest state of it right now.</>

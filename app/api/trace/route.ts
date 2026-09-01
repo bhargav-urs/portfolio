@@ -13,6 +13,54 @@ const bodySchema = z.object({
   target: z.enum(["findspace", "chainvote"]),
 });
 
+/*
+  Rate limiting. In-memory and per instance, which is enough here: the
+  point is that this page can never hammer the free-tier backends it
+  traces, not to survive a distributed flood.
+*/
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX_PER_IP = 5;
+const RATE_MAX_GLOBAL = 30;
+
+const hitsByIp = new Map<string, number[]>();
+const globalHits: number[] = [];
+
+function prune(arr: number[], cutoff: number): void {
+  while (arr.length > 0 && (arr[0] ?? Infinity) <= cutoff) arr.shift();
+}
+
+function clientIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return request.headers.get("x-real-ip") ?? "unknown";
+}
+
+function allowRequest(ip: string): boolean {
+  const cutoff = Date.now() - RATE_WINDOW_MS;
+  prune(globalHits, cutoff);
+  if (globalHits.length >= RATE_MAX_GLOBAL) return false;
+  let mine = hitsByIp.get(ip);
+  if (!mine) {
+    mine = [];
+    hitsByIp.set(ip, mine);
+  }
+  prune(mine, cutoff);
+  if (mine.length >= RATE_MAX_PER_IP) return false;
+  const now = Date.now();
+  mine.push(now);
+  globalHits.push(now);
+  if (hitsByIp.size > 1000) {
+    for (const [key, arr] of hitsByIp) {
+      prune(arr, cutoff);
+      if (arr.length === 0) hitsByIp.delete(key);
+    }
+  }
+  return true;
+}
+
 type TargetSpec = {
   url: string;
   method: "GET" | "POST";
@@ -143,6 +191,13 @@ function toLines(body: string): string[] {
 }
 
 export async function POST(request: Request) {
+  if (!allowRequest(clientIp(request))) {
+    return NextResponse.json(
+      { ok: false, error: "rate-limit", elapsedMs: 0 },
+      { status: 429 },
+    );
+  }
+
   let parsedBody: z.infer<typeof bodySchema>;
   try {
     parsedBody = bodySchema.parse(await request.json());
