@@ -1,12 +1,20 @@
 import { ImageResponse } from "next/og";
 
-import { profile, subsystemBySlug } from "@/content";
+import { profile, SLUGS, subsystemBySlug } from "@/content";
 import { slugSchema } from "@/content/types";
 import { CHANNEL_HEX, loadArchivo, OG_COLORS } from "@/lib/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "Subsystem schematic summary";
+
+// Rendered at build time, so the font fetch happens once here and never
+// on a visitor's request.
+export const dynamicParams = false;
+
+export function generateStaticParams(): Array<{ slug: string }> {
+  return SLUGS.map((slug) => ({ slug }));
+}
 
 export default async function OgImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
