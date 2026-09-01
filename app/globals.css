@@ -1,0 +1,286 @@
+@import "tailwindcss";
+
+/*
+  Token layer. Two finishes on the same panel: light enamel (default)
+  and a graphite variant. The -text channel variants are the same hues
+  held at 4.5:1 or better against the darkest ground of their finish;
+  the numbers come from scripts/contrast.mjs.
+*/
+
+:root {
+  --panel: #dde2dc;
+  --panel-recess: #c9cfc8;
+  --panel-raised: #eaeee8;
+  --ink: #191d1c;
+  --ink-soft: #4f5955;
+  --ink-soft-deep: #4f5955;
+  --hairline: rgba(25, 29, 28, 0.14);
+  --hairline-strong: rgba(25, 29, 28, 0.32);
+
+  --ch-findspace: #7a5c3e;
+  --ch-converge: #5b4b8a;
+  --ch-mappedin: #2e6e5b;
+  --ch-chainvote: #a6791f;
+  --ch-agripulse: #35607a;
+
+  --ch-findspace-text: #6c5237;
+  --ch-converge-text: #5b4b8a;
+  --ch-mappedin-text: #296151;
+  --ch-chainvote-text: #705215;
+  --ch-agripulse-text: #335c75;
+
+  --live: #3f7d4e;
+  --waking: #b07c1e;
+  --offline: #8c3a32;
+  --unknown: #7a827d;
+}
+
+[data-finish="dark"] {
+  --panel: #232826;
+  --panel-recess: #1b201e;
+  --panel-raised: #2e3431;
+  --ink: #e3e8e2;
+  --ink-soft: #a8b1ab;
+  --ink-soft-deep: #aeb7b1;
+  --hairline: rgba(227, 232, 226, 0.16);
+  --hairline-strong: rgba(227, 232, 226, 0.34);
+
+  --ch-findspace-text: #b79471;
+  --ch-converge-text: #9f93c4;
+  --ch-mappedin-text: #48ab8e;
+  --ch-chainvote-text: #c69025;
+  --ch-agripulse-text: #6da0bf;
+
+  --live: #5aa06b;
+  --waking: #c9993d;
+  --offline: #c0665c;
+  --unknown: #8f9892;
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-panel: var(--panel);
+  --color-recess: var(--panel-recess);
+  --color-raised: var(--panel-raised);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-soft-deep: var(--ink-soft-deep);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-live: var(--live);
+  --color-waking: var(--waking);
+  --color-offline: var(--offline);
+  --color-unknown: var(--unknown);
+  --color-channel: var(--ch);
+  --color-channel-text: var(--ch-text);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-panel: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-reading: var(--font-newsreader), ui-serif, Georgia, serif;
+  --font-machine: var(--font-plex), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* The eight steps of the scale and nothing between. */
+  --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.35;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.45;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5;
+  --text-md: 1.125rem;
+  --text-md--line-height: 1.5;
+  --text-lg: 1.375rem;
+  --text-lg--line-height: 1.35;
+  --text-xl: 1.75rem;
+  --text-xl--line-height: 1.25;
+  --text-2xl: 2.25rem;
+  --text-2xl--line-height: 1.15;
+  --text-3xl: 3.25rem;
+  --text-3xl--line-height: 1.05;
+
+  --radius-*: initial;
+  --radius-plate: 2px;
+  --radius-lamp: 999px;
+
+  --shadow-*: initial;
+  --drop-shadow-*: initial;
+
+  --breakpoint-rail: 900px;
+}
+
+/* Channel scoping: set on any subtree that belongs to one subsystem. */
+.channel-findspace { --ch: var(--ch-findspace); --ch-text: var(--ch-findspace-text); }
+.channel-convergeai { --ch: var(--ch-converge); --ch-text: var(--ch-converge-text); }
+.channel-mappedin { --ch: var(--ch-mappedin); --ch-text: var(--ch-mappedin-text); }
+.channel-chainvote { --ch: var(--ch-chainvote); --ch-text: var(--ch-chainvote-text); }
+.channel-agripulse { --ch: var(--ch-agripulse); --ch-text: var(--ch-agripulse-text); }
+
+@layer base {
+  html {
+    background: var(--panel);
+    color: var(--ink);
+    font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background: var(--panel);
+    color: var(--ink);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+    border-radius: 1px;
+  }
+
+  ::selection {
+    background: var(--ink);
+    color: var(--panel);
+  }
+}
+
+@layer components {
+  /* A recessed inset, the way a meter window sits behind the face plate. */
+  .inset {
+    background: var(--panel-recess);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    border-radius: var(--radius-plate);
+  }
+
+  /* A raised plate riveted onto the face. */
+  .plate {
+    background: var(--panel-raised);
+    box-shadow: inset 0 0 0 1px var(--hairline);
+    border-radius: var(--radius-plate);
+  }
+
+  .hairline-b { border-bottom: 1px solid var(--hairline); }
+  .hairline-t { border-top: 1px solid var(--hairline); }
+  .hairline-r { border-right: 1px solid var(--hairline); }
+
+  .tnum { font-variant-numeric: tabular-nums; }
+
+  .prose-reading {
+    font-family: var(--font-newsreader), ui-serif, Georgia, serif;
+    line-height: 1.62;
+    max-width: 68ch;
+  }
+
+  .condensed {
+    font-stretch: 75%;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0.5rem;
+    z-index: 60;
+    background: var(--panel-raised);
+    box-shadow: inset 0 0 0 1px var(--hairline-strong);
+    border-radius: var(--radius-plate);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus {
+    left: 0.5rem;
+  }
+
+  .sr-only-list {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+/* Boot sequence. Runs once per session; reduced motion gets the final state. */
+@keyframes node-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes edge-trace {
+  from { stroke-dashoffset: var(--edge-length, 600); }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes lamp-settle {
+  from { opacity: 0.25; }
+  to { opacity: 1; }
+}
+
+.boot .schematic-node {
+  animation: node-arrive 180ms ease-out both;
+  animation-delay: calc(var(--boot-order, 0) * 40ms);
+}
+.boot .schematic-edge {
+  stroke-dasharray: var(--edge-length, 600);
+  animation: edge-trace 300ms ease-in-out both;
+  animation-delay: calc(var(--boot-order, 0) * 40ms + 80ms);
+}
+.boot .schematic-edge-label {
+  animation: node-arrive 180ms ease-out both;
+  animation-delay: calc(var(--boot-order, 0) * 40ms + 260ms);
+}
+.boot .schematic-edge-fade {
+  animation: node-arrive 220ms ease-out both;
+  animation-delay: calc(var(--boot-order, 0) * 40ms + 80ms);
+}
+
+/* The invisible interactive layer over the drawn nodes. */
+.schematic-hit {
+  position: absolute;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.lamp-settling { animation: lamp-settle 260ms ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Reader mode print: one A4 side, ink on white, no chrome. */
+@media print {
+  :root {
+    --panel: #ffffff;
+    --panel-recess: #ffffff;
+    --panel-raised: #ffffff;
+    --ink: #000000;
+    --ink-soft: #333333;
+    --hairline: rgba(0, 0, 0, 0.25);
+  }
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  body {
+    font-size: 9.5pt;
+    line-height: 1.35;
+  }
+  .no-print { display: none !important; }
+  a { color: #000000; text-decoration: none; }
+  .print-url::after {
+    content: " (" attr(data-href) ")";
+    font-size: 8pt;
+    color: #333333;
+  }
+}
