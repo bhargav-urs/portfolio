@@ -65,7 +65,7 @@ export const education: Education[] = [
     location: "Arlington, Texas",
     start: "Jan 2024",
     end: "Dec 2025",
-    detail: "GPA 3.75/4. Specializations in Data Sciences and Intelligent Systems.",
+    detail: "GPA 3.75/4. Specializations in Big Data and Intelligent Systems.",
   },
   {
     school: "Visvesvaraya Technological University",
