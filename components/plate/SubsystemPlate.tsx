@@ -10,7 +10,7 @@ import { DecisionsTab } from "@/components/plate/DecisionsTab";
 import { MetricsTab } from "@/components/plate/MetricsTab";
 import { ScreensTab } from "@/components/plate/ScreensTab";
 import { StackTab } from "@/components/plate/StackTab";
-import { Tabs, type TabId } from "@/components/plate/Tabs";
+import { TAB_LABELS, Tabs, type TabId } from "@/components/plate/Tabs";
 import { useShellState } from "@/components/shell/ShellState";
 import { TracePanel } from "@/components/trace/TracePanel";
 import { litNodesFor, techRegistry } from "@/content/client";
@@ -149,6 +149,7 @@ export function SubsystemPlate({ subsystem }: { subsystem: Subsystem }) {
       ) : null}
 
       <div className="mt-5">
+        <h2 className="sr-only-list">Architecture</h2>
         <Schematic
           subsystem={subsystem}
           selectedId={selectedNodeId}
@@ -188,6 +189,7 @@ export function SubsystemPlate({ subsystem }: { subsystem: Subsystem }) {
           aria-labelledby={`${subsystem.slug}-tab-${tab}`}
           className="mt-5"
         >
+          <h2 className="sr-only-list">{TAB_LABELS[tab]}</h2>
           {tab === "decisions" ? (
             <DecisionsTab subsystem={subsystem} highlightIndex={highlightDecision} />
           ) : tab === "stack" ? (
