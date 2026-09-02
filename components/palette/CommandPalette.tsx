@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useShellState } from "@/components/shell/ShellState";
-import { profile } from "@/content/client";
+import { profile, techRegistry } from "@/content/client";
 import { emitDecisionFocus, emitNodeFocus } from "@/lib/events";
 import { toggleFinish } from "@/lib/finish";
 import { searchDocs, type SearchDoc } from "@/lib/searchIndex";
@@ -37,8 +37,7 @@ export function CommandPalette({
 
   const results = searchDocs(query);
 
-  const run = (doc: SearchDoc) => {
-    onOpenChange(false);
+  const perform = (doc: SearchDoc) => {
     const here = (slug: string) => pathname === `/s/${slug}`;
     switch (doc.kind) {
       case "subsystem":
@@ -62,9 +61,21 @@ export function CommandPalette({
           }
         }
         break;
-      case "tech":
-        if (doc.tech) setTech(doc.tech);
+      case "tech": {
+        if (!doc.tech) break;
+        const entry = techRegistry.get(doc.tech);
+        const onSubsystemUsingIt =
+          entry?.uses.some((u) => here(u.slug)) ?? false;
+        // Lighting a chip only means something on a plate that has the
+        // technology in its schematic, so from anywhere else the palette
+        // lands on a subsystem that actually uses it.
+        if (!onSubsystemUsingIt && entry?.uses[0]) {
+          router.push(`/s/${entry.uses[0].slug}?tech=${encodeURIComponent(doc.tech)}`);
+        } else {
+          setTech(doc.tech);
+        }
         break;
+      }
       case "experience":
         router.push("/work");
         break;
@@ -93,6 +104,11 @@ export function CommandPalette({
         }
         break;
     }
+  };
+
+  const run = (doc: SearchDoc) => {
+    onOpenChange(false);
+    perform(doc);
   };
 
   return (
