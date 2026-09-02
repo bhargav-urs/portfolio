@@ -319,7 +319,40 @@ export const agripulse: Subsystem = {
     description:
       "Not publicly deployed. Timings shown here are captured from a real local run, never invented.",
   },
-  screens: [],
+  screens: [
+    {
+      src: "/screens/agripulse/02-dashboard.png",
+      alt: "The AgriPulse operator dashboard on a phone, showing a soil moisture gauge, pump state, tank level, weather, and a warning alert",
+      caption:
+        "The operator panel. The radial gauge is drawn in SVG rather than pulled from a charting library, and the pump reads STOPPED with its valve closed.",
+      width: 800,
+      height: 1778,
+    },
+    {
+      src: "/screens/agripulse/04-network-diagnostics.png",
+      alt: "The AgriPulse network diagnostics screen reporting the Java native module as loaded, with connection type and backend latency",
+      caption:
+        "The Java native module reporting connection type and measured latency to the backend and the socket port. JavaScript cannot see any of this.",
+      width: 800,
+      height: 1778,
+    },
+    {
+      src: "/screens/agripulse/03-settings.png",
+      alt: "The AgriPulse device settings screen with automation thresholds for moisture, rain probability, and tank level",
+      caption:
+        "The thresholds the automation rule function reads: moisture minimum, rain probability ceiling, tank minimum.",
+      width: 800,
+      height: 1778,
+    },
+    {
+      src: "/screens/agripulse/01-operator.png",
+      alt: "The AgriPulse welcome screen, noting that no account is needed in demo mode",
+      caption:
+        "The entry screen. No account needed is literal: there is no authentication on the operator app.",
+      width: 800,
+      height: 1778,
+    },
+  ],
   readerSummary:
     "A real-time mobile control panel for a smart irrigation pump, built to behave like an industrial controller. React Native operator app with a Java native module for OS-level network diagnostics, Node 22 backend with server-authoritative safety interlocks, a pure-function weather automation engine that stores its reasoning, and a deterministic, physics-grounded device simulator speaking the exact protocol real hardware would. The device is simulated, and labelled so.",
 };

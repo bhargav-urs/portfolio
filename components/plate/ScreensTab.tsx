@@ -33,7 +33,7 @@ export function ScreensTab({ subsystem }: { subsystem: Subsystem }) {
                   alt={screen.alt}
                   width={screen.width}
                   height={screen.height}
-                  sizes={portrait ? "300px" : "(min-width: 768px) 45vw, 92vw"}
+                  sizes={portrait ? "300px" : "(min-width: 1400px) 560px, (min-width: 900px) 42vw, 92vw"}
                   className="h-auto w-full"
                 />
               </div>

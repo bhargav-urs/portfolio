@@ -274,7 +274,40 @@ export const findspace: Subsystem = {
     description:
       "Fires one real read-only request at the deployed Spring Boot API on Render and times each hop.",
   },
-  screens: [],
+  screens: [
+    {
+      src: "/screens/findspace/01-search-results.png",
+      alt: "FindSpace search results for the term downtown, showing three matching listings with prices and Arlington addresses",
+      caption:
+        "Search runs as a SQL LIKE across title, address, and description. It is the first thing that breaks at real listing volume.",
+      width: 1600,
+      height: 1067,
+    },
+    {
+      src: "/screens/findspace/02-listing-detail.png",
+      alt: "A FindSpace listing detail page with rent, address, availability, and a message box addressed to the landlord",
+      caption:
+        "Listing detail. The contact box opens a conversation bound to this listing, which is what makes deletion a runtime decision.",
+      width: 1600,
+      height: 1111,
+    },
+    {
+      src: "/screens/findspace/03-conversation.png",
+      alt: "A threaded FindSpace conversation between a tenant and a landlord about a listing, headed Re: Listing #11",
+      caption:
+        "A thread carrying its listing reference. History like this is why a listing with conversations is hidden rather than removed.",
+      width: 1600,
+      height: 1000,
+    },
+    {
+      src: "/screens/findspace/04-landlord-dashboard.png",
+      alt: "The FindSpace landlord dashboard listing three properties, one marked inactive and hidden from public view",
+      caption:
+        "The soft delete rule in the open: two listings offer Delete, the one with history offers Remove and reads hidden from public view, edit it to reactivate.",
+      width: 1600,
+      height: 1167,
+    },
+  ],
   readerSummary:
     "A room rental marketplace: tenants search listings and message landlords, landlords manage their own inventory. Next.js client on Vercel, Spring Boot 3.2 API in Docker on Render, PostgreSQL 15 on Neon. Stateless JWT auth, a runtime soft-delete policy, environment-driven configuration, and CI building both apps on every push. The free tier sleeps, so the first request after idle is slow.",
 };

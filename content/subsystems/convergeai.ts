@@ -364,7 +364,32 @@ export const convergeai: Subsystem = {
     description:
       "This service is not publicly deployed. Timings shown here are captured from a real local run, never invented.",
   },
-  screens: [],
+  screens: [
+    {
+      src: "/screens/convergeai/02-workspace.png",
+      alt: "The ConvergeAI workspace with the five pipeline phases complete, retrieved context, and per-agent revised answers",
+      caption:
+        "One debate, finished in 50.1 seconds: retrieval, independent answers, cross-critique, revision, consensus, with each claim cited back to a chunk.",
+      width: 1600,
+      height: 1000,
+    },
+    {
+      src: "/screens/convergeai/03-dashboard.png",
+      alt: "The ConvergeAI analytics dashboard showing processing time, agent stability, and per-agent first-answer latency",
+      caption:
+        "Per-agent first-answer times of 1.4 s, 3.2 s, and 673 ms. Confidence here is reported by the models, not calibrated against ground truth.",
+      width: 1600,
+      height: 1000,
+    },
+    {
+      src: "/screens/convergeai/01-landing.png",
+      alt: "The ConvergeAI landing page describing document-grounded debate between three independent models",
+      caption:
+        "The entry page. The engineering is in the workspace and the analytics above it.",
+      width: 1600,
+      height: 1000,
+    },
+  ],
   readerSummary:
     "Three independent language models answer from the same document, critique each other against the source text, revise, and converge on one cited answer. Spring Boot 3.5 on Java 21 virtual threads, in-process ONNX embeddings, pgvector retrieval, four providers with automatic failover, live progress over STOMP. End-to-end latency fell from roughly 4.5 minutes to under a minute, about 5 seconds in fast mode.",
 };

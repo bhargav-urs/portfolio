@@ -291,7 +291,32 @@ export const chainvote: Subsystem = {
     description:
       "Fires one real read-only JSON-RPC call at the public Amoy pool the app itself reads through, and times each hop.",
   },
-  screens: [],
+  screens: [
+    {
+      src: "/screens/chainvote/01-admin-factory-deploy.png",
+      alt: "The ChainVote admin screen showing the factory address, candidate list, voting window, and a deploy action",
+      caption:
+        "The factory address the whole app is configured with, plus the window and whitelist that the contract enforces. Only the factory owner can create an election.",
+      width: 1600,
+      height: 988,
+    },
+    {
+      src: "/screens/chainvote/02-elections-list.png",
+      alt: "The ChainVote elections list showing four elections, each with its own contract address, vote count, and status",
+      caption:
+        "Four elections, four separate contract addresses, all discovered from that one factory. Each gets its own explorer page.",
+      width: 1600,
+      height: 990,
+    },
+    {
+      src: "/screens/chainvote/03-home.png",
+      alt: "The ChainVote home page with a connected wallet address in the header",
+      caption:
+        "The public entry page, reachable with or without a wallet: reads do not need one.",
+      width: 1600,
+      height: 988,
+    },
+  ],
   readerSummary:
     "A voting platform where the tally lives in a smart contract and every ballot is a publicly verifiable transaction on Polygon Amoy. Enforcement is in Solidity, not the interface: whitelist, one vote per address, valid candidate, time window. Reads run walletless through a failover RPC pool; a real DNS outage of Polygon's public endpoint was diagnosed and designed out. 27 passing contract tests.",
 };

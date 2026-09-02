@@ -388,7 +388,24 @@ export const mappedin: Subsystem = {
     description:
       "Not yet deployed. Timings shown here are captured from a real local run, never invented.",
   },
-  screens: [],
+  screens: [
+    {
+      src: "/screens/mappedin/01-globe-arcs.png",
+      alt: "The MappedIn globe showing a visited list of seven places joined by curved journey arcs, with per-leg distances",
+      caption:
+        "Arcs densified by ST_Segmentize follow the geodesic across the Pacific instead of cutting through the sphere. Per-leg distances are spheroid metres from ST_Distance.",
+      width: 1600,
+      height: 1000,
+    },
+    {
+      src: "/screens/mappedin/02-geocoder-disambiguation.png",
+      alt: "The MappedIn place search resolving the name Springfield by narrowing to Illinois, United States",
+      caption:
+        "Geocoding with disambiguation: a name plus a state separates two places that share a name. The rejected geocoder put the Eiffel Tower in Alberta.",
+      width: 1600,
+      height: 1000,
+    },
+  ],
   readerSummary:
     "A travel portfolio on a rotatable 3D globe where the geography is computed in PostGIS, not faked in JavaScript. Spring Boot 4.1 on Java 25, PostgreSQL 18 with native UUIDv7 keys, ownership-scoped repositories returning 404 over 403, geodesic arcs from ST_Segmentize, and tests against real PostGIS through Testcontainers. 83 tests, 89.7% instruction coverage, antimeridian handling pinned by tests.",
 };
