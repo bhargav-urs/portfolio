@@ -19,7 +19,7 @@ export const profile: Profile = {
   resumeHref: "/resume.pdf",
   headlineStats: [
     { value: "5", label: "systems on this console" },
-    { value: "2", label: "live deployments" },
+    { value: "3", label: "live deployments" },
     { value: "3.75", label: "GPA, MS Computer Science, UT Arlington" },
   ],
   about:

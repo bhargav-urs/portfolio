@@ -5,8 +5,12 @@ export const convergeai: Subsystem = {
   name: "ConvergeAI",
   oneLine:
     "A document-grounded platform where three independent language models answer, critique each other against the source text, revise, and converge on one cited answer.",
-  statusMode: "static",
-  staticStatusNote: "not publicly deployed",
+  statusMode: "checked",
+  live: {
+    label: "Live",
+    href: "https://converge-ai-nine.vercel.app",
+    host: "converge-ai-nine.vercel.app",
+  },
   repo: {
     label: "Repository",
     href: "https://github.com/bhargav-urs/ConvergeAI",
@@ -17,7 +21,7 @@ export const convergeai: Subsystem = {
     {
       id: "svc",
       label: "Spring Boot 3.5 service",
-      note: "Java 21",
+      note: "Java 21, Amazon EC2",
       x: 300,
       y: 40,
       w: 400,
@@ -32,6 +36,7 @@ export const convergeai: Subsystem = {
     {
       id: "client",
       label: "React 18 + Vite client",
+      sub: "Vercel",
       kind: "client",
       x: 40,
       y: 260,
@@ -345,6 +350,9 @@ export const convergeai: Subsystem = {
     { tech: "recharts", label: "Recharts", group: "frontend", nodes: ["client"] },
     { tech: "react-dropzone", label: "react-dropzone", group: "frontend", nodes: ["client"] },
     { tech: "sonner", label: "Sonner", group: "frontend", nodes: ["client"] },
+    { tech: "ec2", label: "Amazon EC2", group: "infra", nodes: ["orchestrator", "router", "consensus", "tika"] },
+    { tech: "vercel", label: "Vercel", group: "infra", nodes: ["client"] },
+    { tech: "letsencrypt", label: "Let's Encrypt over an sslip.io hostname", group: "infra", nodes: ["orchestrator"] },
     { tech: "docker", label: "Docker", group: "infra", nodes: ["client", "orchestrator"] },
     { tech: "docker-compose", label: "Docker Compose", group: "infra", nodes: ["client", "orchestrator"] },
     { tech: "nginx", label: "Nginx", group: "infra", nodes: ["client"] },
@@ -360,9 +368,10 @@ export const convergeai: Subsystem = {
     { value: "~5 s", label: "end-to-end latency in fast mode" },
   ],
   trace: {
-    mode: "recorded",
+    mode: "live",
+    target: "convergeai",
     description:
-      "This service is not publicly deployed. Timings shown here are captured from a real local run, never invented.",
+      "Fires one real read-only request at the Spring Boot health endpoint on the EC2 instance and times each hop.",
   },
   screens: [
     {
@@ -391,5 +400,5 @@ export const convergeai: Subsystem = {
     },
   ],
   readerSummary:
-    "Three independent language models answer from the same document, critique each other against the source text, revise, and converge on one cited answer. Spring Boot 3.5 on Java 21 virtual threads, in-process ONNX embeddings, pgvector retrieval, four providers with automatic failover, live progress over STOMP. End-to-end latency fell from roughly 4.5 minutes to under a minute, about 5 seconds in fast mode.",
+    "Three independent language models answer from the same document, critique each other against the source text, revise, and converge on one cited answer. React client on Vercel, Spring Boot 3.5 API on an Amazon EC2 instance, Java 21 virtual threads, in-process ONNX embeddings, pgvector retrieval, four providers with automatic failover, live progress over STOMP. End-to-end latency fell from roughly 4.5 minutes to under a minute, about 5 seconds in fast mode.",
 };
