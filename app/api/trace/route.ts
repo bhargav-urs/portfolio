@@ -10,7 +10,7 @@ const MAX_LINES = 40;
 const MAX_LINE_CHARS = 200;
 
 const bodySchema = z.object({
-  target: z.enum(["findspace", "chainvote"]),
+  target: z.enum(["findspace", "chainvote", "convergeai"]),
 });
 
 /*
@@ -78,11 +78,16 @@ const RPC_PAYLOAD = JSON.stringify({
   params: [],
 });
 
-const TARGETS: Record<"findspace" | "chainvote", TargetSpec> = {
+const TARGETS: Record<"findspace" | "chainvote" | "convergeai", TargetSpec> = {
   findspace: {
     url: "https://findspace-backend.onrender.com/api/listings?page=0&size=1",
     method: "GET",
     requestLabel: "GET /api/listings?page=0&size=1 (findspace-backend.onrender.com)",
+  },
+  convergeai: {
+    url: "https://3-21-114-104.sslip.io/actuator/health",
+    method: "GET",
+    requestLabel: "GET /actuator/health (3-21-114-104.sslip.io)",
   },
   chainvote: {
     url: "https://polygon-amoy-bor-rpc.publicnode.com",

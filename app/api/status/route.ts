@@ -12,6 +12,7 @@ const CACHE_MS = 60_000;
 const FINDSPACE_PROBE = "https://findspace-backend.onrender.com/api/listings?page=0&size=1";
 const CHAINVOTE_SITE = "https://blockchain-voting-self.vercel.app";
 const AMOY_RPC = "https://polygon-amoy-bor-rpc.publicnode.com";
+const CONVERGEAI_PROBE = "https://3-21-114-104.sslip.io/actuator/health";
 
 type ProbeResult =
   | { kind: "http"; status: number; ms: number; body: string }
@@ -42,6 +43,29 @@ async function checkFindspace(): Promise<ServiceStatus> {
     case "timeout":
       // Render's free tier sleeps; a silent 5 seconds is the cold start, not an outage.
       return { state: "waking", detail: "no response in 5 s, cold start likely" };
+    case "unreachable":
+      return { state: "offline", detail: "did not respond" };
+  }
+}
+
+async function checkConvergeai(): Promise<ServiceStatus> {
+  const result = await probe(CONVERGEAI_PROBE);
+  switch (result.kind) {
+    case "http": {
+      // Actuator answers {"status":"UP"} when the app and its datasource are
+      // both healthy, so a 200 alone is not the whole story.
+      let up = result.status === 200;
+      try {
+        up = up && (JSON.parse(result.body) as { status?: string }).status === "UP";
+      } catch {
+        up = false;
+      }
+      return up
+        ? { state: "live", detail: `responded in ${result.ms} ms, actuator UP`, ms: result.ms }
+        : { state: "offline", detail: "actuator did not report UP" };
+    }
+    case "timeout":
+      return { state: "unknown", detail: "no response in 5 s" };
     case "unreachable":
       return { state: "offline", detail: "did not respond" };
   }
@@ -88,12 +112,17 @@ export async function GET() {
     });
   }
 
-  const [findspace, chainvote] = await Promise.all([checkFindspace(), checkChainvote()]);
+  const [findspace, chainvote, convergeai] = await Promise.all([
+    checkFindspace(),
+    checkChainvote(),
+    checkConvergeai(),
+  ]);
 
   const services = {} as Record<Slug, ServiceStatus>;
   for (const s of subsystems) {
     if (s.slug === "findspace") services[s.slug] = findspace;
     else if (s.slug === "chainvote") services[s.slug] = chainvote;
+    else if (s.slug === "convergeai") services[s.slug] = convergeai;
     else services[s.slug] = { state: "unknown", detail: s.staticStatusNote ?? "not deployed" };
   }
 
