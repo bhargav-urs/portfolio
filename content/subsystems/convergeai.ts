@@ -143,49 +143,50 @@ export const convergeai: Subsystem = {
     {
       id: "consensus",
       label: "Consensus engine",
+      sub: "Qwen3 27B via Groq",
       kind: "service",
       x: 512,
       y: 430,
       w: 165,
       h: 60,
       detail: {
-        role: "Merges the three revised answers into one, keeps the citations that survived cross-critique, and records model-reported confidence.",
-        why: "A separate engine keeps the merge rules testable in isolation from transport and prompting concerns.",
+        role: "Synthesises the three revised answers into one cited answer with a confidence score, using a fourth model call to Qwen3 27B on Groq.",
+        why: "Three independent answers that disagree need a judgement, and a deterministic merge can only concatenate or vote. A small fast model reads all three against the retrieved chunks and writes the reconciled answer, at the cost of one more provider round trip.",
         rejected:
-          "Letting a fourth model call do the merging. It adds a provider round trip and hides the merge logic inside an opaque call.",
+          "A rule-based merge over the three revised answers. Cheaper and fully deterministic, but it cannot resolve a genuine disagreement, so a contested question comes out as stitched-together fragments rather than an answer.",
         breaks:
-          "Confidence is model-reported and not calibrated against ground truth. Without an evaluation harness the merge stays a design argument, not a measured result.",
+          "This is a fourth dependency on the same free-tier quota, so a rate limit here fails the debate at the last step, after all the expensive work is done. Confidence is model-reported and not calibrated against ground truth.",
       },
     },
     {
       id: "groq",
       label: "Groq",
-      sub: "Llama 3.3 70B",
+      sub: "The Reviewer, GPT-OSS 120B",
       kind: "external",
       x: 760,
       y: 84,
       w: 180,
       h: 56,
       detail: {
-        role: "Serves Llama 3.3 70B as the first of the three independent debaters.",
-        why: "Fast inference on a capable open-weight model at free-tier cost, which sets the pace a debate round can run at.",
+        role: "Serves GPT-OSS 120B as The Reviewer, one of the three independent debaters, and Qwen3 27B for the consensus pass.",
+        why: "Fast inference on capable open-weight models at free-tier cost, which sets the pace a debate round can run at. Two roles on one provider also means one integration to keep healthy.",
         rejected:
-          "Self-hosting a 70B model. Full control, but the hardware bill is real and this project's point is orchestration, not model serving.",
+          "Self-hosting a 120B model. Full control, but the hardware bill is real and this project's point is orchestration, not model serving.",
         breaks:
-          "Free-tier rate limits dominate the latency profile; a burst of debates queues behind Retry-After.",
+          "Free-tier rate limits dominate the latency profile, and two roles ride the same quota, so a burst of debates queues behind Retry-After twice over.",
       },
     },
     {
       id: "cerebras",
       label: "Cerebras",
-      sub: "GLM-4.7",
+      sub: "The Engineer, GLM-4.7",
       kind: "external",
       x: 760,
       y: 168,
       w: 180,
       h: 56,
       detail: {
-        role: "Serves GLM-4.7 as the second independent debater.",
+        role: "Serves GLM-4.7 as The Engineer, the second independent debater.",
         why: "A different model family from a different provider keeps the debate genuinely independent. Three copies of one model mostly agree with themselves.",
         rejected:
           "Three prompts against one model at different temperatures. Cheaper, but critique between near-clones is theatre.",
@@ -195,14 +196,15 @@ export const convergeai: Subsystem = {
     },
     {
       id: "gemini",
-      label: "Gemini 2.5 Flash",
+      label: "Google",
+      sub: "The Analyst, Gemini 2.5 Flash",
       kind: "external",
       x: 760,
       y: 252,
       w: 180,
       h: 56,
       detail: {
-        role: "Serves Gemini 2.5 Flash as the third independent debater.",
+        role: "Serves Gemini 2.5 Flash as The Analyst, the third independent debater.",
         why: "A third model family completes the spread: three architectures, three training sets, three different failure modes to critique each other.",
         rejected:
           "A larger Gemini variant. Better answers, slower rounds; Flash keeps a debate round inside the latency budget.",
@@ -364,6 +366,7 @@ export const convergeai: Subsystem = {
     { value: "5", label: "orchestration phases in the pipeline" },
     { value: "384", label: "dimensions in the local embedding output" },
     { value: "4", label: "model providers with automatic failover" },
+    { value: "4", label: "models: three independent debaters and a consensus synthesiser" },
     { value: "<60 s", label: "end-to-end latency, down from roughly 4.5 minutes" },
     { value: "~5 s", label: "end-to-end latency in fast mode" },
   ],
