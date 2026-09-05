@@ -150,12 +150,12 @@ export const convergeai: Subsystem = {
       w: 165,
       h: 60,
       detail: {
-        role: "Synthesises the three revised answers into one cited answer with a confidence score, using a fourth model call to Qwen3 27B on Groq.",
-        why: "Three independent answers that disagree need a judgement, and a deterministic merge can only concatenate or vote. A small fast model reads all three against the retrieved chunks and writes the reconciled answer, at the cost of one more provider round trip.",
+        role: "Takes all three revised answers plus the retrieved chunks and synthesises a single verdict as strict JSON: the final answer, the points where the agents agreed, the points where they diverged, and a 0 to 100 confidence score.",
+        why: "After three rounds each agent holds its own revised answer, and three answers is not an answer. Rule-based merging can only concatenate, vote, or pick one, and on a genuinely contested question all three collapse into fragments. Only a model can reconcile claims that mean the same thing, surface real disagreement in plain language, and return one coherent answer.",
         rejected:
-          "A rule-based merge over the three revised answers. Cheaper and fully deterministic, but it cannot resolve a genuine disagreement, so a contested question comes out as stitched-together fragments rather than an answer.",
+          "A deterministic merge over the three revised answers. Cheaper and fully predictable, but concatenating, voting, and picking one all fail the same way, and none of them can tell that two differently worded claims are the same claim.",
         breaks:
-          "This is a fourth dependency on the same free-tier quota, so a rate limit here fails the debate at the last step, after all the expensive work is done. Confidence is model-reported and not calibrated against ground truth.",
+          "It runs through the same provider router as the agents, so a rate limit on the final call degrades the debate to the Reviewer's answer rather than failing after all the expensive work. That fallback is graceful but quiet: the output is then one model's answer, not a reconciled one, and nothing in the response says so.",
       },
     },
     {
@@ -264,6 +264,14 @@ export const convergeai: Subsystem = {
     { from: "onnx", to: "db", fromSide: "bottom", toSide: "top", label: "vector(384)" },
     { from: "orchestrator", to: "router", fromSide: "bottom", toSide: "top" },
     { from: "orchestrator", to: "consensus", fromSide: "left", toSide: "left", bend: 506 },
+    {
+      from: "consensus",
+      to: "router",
+      fromSide: "top",
+      toSide: "bottom",
+      label: "same router",
+      dashed: true,
+    },
     { from: "consensus", to: "db", fromSide: "bottom", toSide: "right", bend: 640, label: "JDBC" },
     { from: "router", to: "groq", fromSide: "right", toSide: "left", fromAt: 0.2, bend: 700, dashed: true },
     { from: "router", to: "cerebras", fromSide: "right", toSide: "left", fromAt: 0.4, bend: 714, dashed: true },
@@ -308,6 +316,17 @@ export const convergeai: Subsystem = {
       rejected: "A dedicated vector database running beside Postgres.",
       consequence:
         "One backup, one transaction boundary, one connection pool. The ceiling is Postgres's vector performance, accepted knowingly.",
+    },
+    {
+      title: "The consensus step is a model, not a merge",
+      decision:
+        "The consensus engine sends all three revised answers plus the retrieved chunks to Qwen3 27B on Groq and gets back strict JSON: a final answer, the points of agreement, the points of divergence, and a 0 to 100 confidence score.",
+      constraint:
+        "After three debate rounds each agent holds its own revised answer, and three answers is not an answer.",
+      rejected:
+        "A deterministic merge. Concatenating, voting, and picking one all collapse into fragments on a genuinely contested question, and none of them can recognise that two differently worded claims mean the same thing.",
+      consequence:
+        "One more provider round trip on the critical path. It runs through the same router as the agents, Groq first and OpenRouter as fallback, so a rate limit on the last call degrades to the Reviewer's answer instead of failing the whole debate.",
     },
     {
       title: "Late subscribers see the whole story",
